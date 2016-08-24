@@ -1,15 +1,25 @@
 module MercadoPago
   module CustomCheckout
     module CardTokens
+
+    end
+
+    class CardToken
+
       # Creates a new card token.
       #
       # - card_token_id: The ID of the card token to be retrieved.
       #
-      def create_credit_card_token(payload)
-        MercadoPago::Core::Request.post_request(
-          "/v1/card_tokens",
-          payload
-        )
+      def self.create(payload)
+        MercadoPago::Core::Request.call(:card_token, :create, {})
+        # MercadoPago::Core::Request.post_request(
+        #   "/v1/card_tokens?access_token=#{@access_token}",
+        #   payload
+        # )
+      end
+
+      def initialize(client)
+        @client = client
       end
 
       # Retrieves the specified card token.
@@ -29,11 +39,10 @@ module MercadoPago
       # - data: Contains the data to be updated on the specified card token.
       #
       def update_credit_card_token(card_token_id, payload = {})
-        payload = payload.merge(access_token: @access_token)
         payload = MultiJson.dump(payload)
 
         MercadoPago::Core::Request.put_request(
-          "/v1/card_tokens/#{card_token_id}",
+          "/v1/card_tokens/#{card_token_id}?access_token=#{@access_token}",
           payload
         )
       end

@@ -21,9 +21,10 @@ task default: [:test, :rubocop]
 task :console do
   require 'pry'
   require './lib/mercadopago/custom_checkout'
+  require 'httplog'
 
   def reload!
-    files = $LOADED_FEATURES.select { |feat| feat =~ /\/custom_checkout\// }
+    files = $LOADED_FEATURES.select { |feat| feat =~ /\/mercadopago\// }
     files.each { |file| load file }
   end
 
