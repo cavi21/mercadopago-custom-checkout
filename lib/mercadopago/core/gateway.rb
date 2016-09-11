@@ -6,7 +6,6 @@ module MercadoPago
       MIME_JSON = 'application/json'.freeze
       MERCADOPAGO_RUBY_SDK_VERSION = '0.3.4'.freeze
       MERCADOPAGO_API_URL = 'https://api.mercadopago.com'.freeze
-      API_VERSION = "v1"
 
       class Error < StandardError; end
 

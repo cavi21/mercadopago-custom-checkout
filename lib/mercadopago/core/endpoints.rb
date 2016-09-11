@@ -5,24 +5,24 @@ module MercadoPago
         retrieve: {
           endpoint: "/%{version}/payment_methods/card_issuers",
           method: :get,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         }
       },
       card_tokens: {
         create: {
           endpoint: "/%{version}/card_tokens",
           method: :post,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         },
         retrieve: {
           endpoint: "/%{version}/card_tokens/%{id}",
           method: :get,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         },
         update: {
           endpoint: "/%{version}/card_tokens/%{id}",
           method: :put,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         }
       },
       cards: {
@@ -83,21 +83,21 @@ module MercadoPago
         retrieve: {
           endpoint: "/%{version}/identification_types",
           method: :get,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         }
       },
       installments:{
         retrieve: {
           endpoint: "/%{version}/payment_methods/installments",
           method: :get,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         }
       },
       payment_methods:{
         retrieve: {
           endpoint: "/%{version}/payment_methods",
           method: :get,
-          allowed_tokens: [:public_key, :access_token]
+          allowed_tokens: [:public_key]
         }
       },
       payments: {
@@ -121,7 +121,14 @@ module MercadoPago
           method: :put,
           allowed_tokens: [:access_token]
         }
+      },
+      users: {
+        me: {
+          endpoint: "/users/me",
+          method: :get,
+          allowed_tokens: [:access_token]
+        }
       }
-    }
+    }.freeze
   end
 end

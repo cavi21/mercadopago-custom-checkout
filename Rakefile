@@ -24,8 +24,13 @@ task :console do
   require 'httplog'
 
   def reload!
-    files = $LOADED_FEATURES.select { |feat| feat =~ /\/mercadopago\// }
+    files = $LOADED_FEATURES.select { |feat| feat =~ %r{lib/mercadopago} }
+    # Deactivate warning messages.
+    original_verbose, $VERBOSE = $VERBOSE, nil
     files.each { |file| load file }
+    # Activate warning messages again.
+    $VERBOSE = original_verbose
+    "Console reloaded!"
   end
 
   ARGV.clear

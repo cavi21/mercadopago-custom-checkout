@@ -2,6 +2,7 @@ module MercadoPago
   module Core
     class Client
       attr_reader :public_key, :version
+      API_VERSION = "v1".freeze
 
       # Creates an instance to make calls to the MercadoPago CustomCheckout API.
       def initialize(public_key = nil, access_token = nil)
@@ -10,11 +11,11 @@ module MercadoPago
         @access_token = access_token if access_token
         @public_key = public_key if public_key
         @gateway = MercadoPago::Core::Gateway
-        @version = @gateway::API_VERSION
+        @version = API_VERSION
       end
 
       def call(resource, action, data = {})
-        return unless request = request_for(resource, action)
+        request = request_for!(resource.to_sym, action.to_sym)
         endpoint_path, payload = build_endpoint_path(request, data)
 
         @gateway.send(request[:method], endpoint_path, payload)
@@ -29,9 +30,20 @@ module MercadoPago
         end
       end
 
-      def request_for(resource, call)
-        return unless resource = MercadoPago::Core::ENDPOINTS[resource.to_sym]
-        resource[call.to_sym]
+      def request_for!(resource, action)
+        unless MercadoPago::Core::ENDPOINTS.keys.include?(resource)
+          error = "There is no :#{resource} resource. The available ones are: " \
+                  "[:#{MercadoPago::Core::ENDPOINTS.keys.join(', :')}]"
+          raise ResourceError.new(error)
+        end
+        resource = MercadoPago::Core::ENDPOINTS[resource]
+
+        unless resource.keys.include?(action)
+          error = "There is no action called :#{action}. The available actions are: "\
+                  "[:#{resource.keys.join(', :')}]"
+          raise ResourceError.new(error)
+        end
+        resource[action]
       end
 
       def build_endpoint_path(request, data)
