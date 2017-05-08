@@ -35,7 +35,7 @@ module MercadoPago
 
       def payment_method(bin_number)
         number = bin_number.gsub(/\s*/, '')[0,6]
-        payment_methods.detect do |method|
+        payment_methods.select do |method|
           bin = method.bin
           bin &&
           (number.match(bin[:pattern]) ? true : false) &&
@@ -64,6 +64,7 @@ module MercadoPago
 
       def identification_types
         return @identification_types unless @identification_types.nil?
+
         response = @client.call(:identification_types, :retrieve)
         if response.is_a?(Array)
           @identification_types = response.map do |identification|
@@ -91,7 +92,7 @@ module MercadoPago
       #   docType: '', # Except for México
       #   docNumber: '' # Except for México
       # }
-      def create_card_token(payload = {})
+      def create_card_token(**payload)
         response = @client.call(:card_tokens, :create, payload)
         if response.key?(:error)
           response
@@ -100,17 +101,25 @@ module MercadoPago
         end
       end
 
-      def create_payment(payload = {})
+      def create_payment(**payload)
         @client.call(:payments, :create, payload)
+      end
+
+      def create_customer(**payload)
+        @client.call(:customers, :create, payload)
       end
 
       def add_card_to_customer(customer_id:, **payload)
         @client.call(:cards, :create, payload.merge(customer_id: customer_id))
       end
 
-      def customers(payload = {})
+      def customer(customer_id)
+        @client.call(:customers, :retrieve, { id: customer_id })
+      end
+
+      def customers(**payload)
         if response = @client.call(:customers, :search, payload)
-          binding.pry
+          response[:results]
         else
           []
         end

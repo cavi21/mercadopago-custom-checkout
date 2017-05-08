@@ -31,12 +31,14 @@ module MercadoPago
         make_request(:delete, path)
       end
 
-      def headers
+      def headers(idempotency_key = nil)
         {
           'User-Agent' => "MercadoPago Ruby SDK v#{MERCADOPAGO_RUBY_SDK_VERSION}",
           content_type: MIME_JSON,
           accept: MIME_JSON
-        }
+        }.tap do |_hash|
+          _hash['X-Idempotency-Key'] = idempotency_key if idempotency_key
+        end
       end
 
       # Makes a HTTP request to the MercadoPago API.
@@ -45,13 +47,14 @@ module MercadoPago
       # - path: the path of the API to be called.
       # - json: the data to be trasmitted to the API.
       def make_request(method, path, payload = {})
+        idempotency_key = payload.delete(:idempotency_key) || payload.delete('idempotency_key')
         unless payload.empty?
           payload = MultiJson.dump(payload) unless method == :get
         end
 
         response = connection(method).send(method) do |call|
           call.url path
-          call.headers = headers
+          call.headers = headers( idempotency_key )
           unless payload.empty?
             if method == :get
               call.params = call.params.merge(payload)
