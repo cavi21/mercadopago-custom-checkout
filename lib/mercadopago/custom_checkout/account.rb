@@ -105,6 +105,18 @@ module MercadoPago
         @client.call(:payments, :create, payload)
       end
 
+      def payment(payment_id)
+        @client.call(:payments, :retrieve, { id: payment_id })
+      end
+
+      def payments(**payload)
+        if response = @client.call(:payments, :search, payload)
+          response[:results]
+        else
+          []
+        end
+      end
+
       def create_customer(**payload)
         @client.call(:customers, :create, payload)
       end
