@@ -105,6 +105,10 @@ module MercadoPago
         @client.call(:payments, :create, payload)
       end
 
+      def full_refund_payment(payment_id, metadata = {})
+        @client.call(:payments, :refund, { id: payment_id, metadata: metadata } )
+      end
+
       def payment(payment_id)
         @client.call(:payments, :retrieve, { id: payment_id })
       end

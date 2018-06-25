@@ -111,6 +111,11 @@ module MercadoPago
           method: :post,
           allowed_tokens: [:access_token]
         },
+        refund: {
+          endpoint: "/%{version}/payments/%{id}/refunds",
+          method: :post,
+          allowed_tokens: [:access_token]
+        },
         retrieve: {
           endpoint: "/%{version}/payments/%{id}",
           method: :get,
